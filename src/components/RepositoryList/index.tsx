@@ -1,20 +1,42 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
+import {connect} from "react-redux";
+import {bindActionCreators, Dispatch} from "redux";
 
+import {ApplicationState} from "../../store";
+import {Repository} from "../../store/ducks/repositories/types";
+import * as RepositoriesActions from '../../store/ducks/repositories/actions';
+import RepositoryItem from "../RepositoryItem";
 
-interface Props {
+interface StateProps {
     repositories: Repository[]
 }
 
-const RepositoryList: React.FC<Props> = ({repositories}) => {
-    const [newRepository, setNewRepository] = useState<string>('');
+interface DispatchProps {
+    loadRequest(): void
+}
 
-    useEffect();
+// interface OwnProps {
+//
+// }
+
+type Props = StateProps & DispatchProps
+
+const RepositoryList: React.FC<Props> = ({repositories, loadRequest}) => {
+    useEffect(() => {
+        loadRequest()
+    });
 
     return (
         <ul>
-            {repositories.map(repository => <li>{repository.name}</li>)}
+            {repositories.map(repository => <RepositoryItem key={repository.id} repository={repository}/>)}
         </ul>
     )
 };
 
-export default RepositoryList
+const mapStateToProps = (state: ApplicationState) => ({
+    repositories: state.repositories.data
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators(RepositoriesActions, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(RepositoryList)
