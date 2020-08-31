@@ -24,7 +24,7 @@ type Props = StateProps & DispatchProps
 const RepositoryList: React.FC<Props> = ({repositories, loadRequest}) => {
     useEffect(() => {
         loadRequest()
-    });
+    }, []);
 
     return (
         <ul>
